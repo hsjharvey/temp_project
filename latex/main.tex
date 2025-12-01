@@ -1,0 +1,386 @@
+\input{config.tex}
+
+\title{Building a Multi-Asset Portfolio}
+\subtitle{A case study on constructing a cryptocurrency portfolio}
+\author{Harvey Huang}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%----------------------------+-----
+\begin{frame}{Contents}
+  \tableofcontents
+\end{frame}
+
+\section{Introduction}
+\begin{frame}{Client profile}
+  \begin{itemize}
+    \item Age: 30
+    \item Crypto-native
+    % \item Annual net household income: \$100,000
+    \item Investment capital: \$10,000
+    \item Investment goal: maintain a balanced crypto portfolio
+    \item Investment horizon: 2 years
+    \item Preferred asset choice: cryptocurrencies only.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Advice question}
+  \centering
+  \it{What crypto asset and how much should the I invest?}
+\end{frame}
+
+\section{Methodology}
+\begin{frame}{Proposed method: a quantitative analysis framework}
+    \begin{itemize}
+      \item Theoretical framework: Modern Portfolio Theory \cite{markowitz1952}
+            \begin{itemize}
+              \item Mean-variance analysis/optimization
+              \item Balance return and risk (measured by standard deviation)
+            \end{itemize}
+      \item Steps:
+        \begin{enumerate}
+          \item Asset screening
+          \item Data collection
+          \item Preliminary analysis
+          \item Portfolio optimization
+        \end{enumerate}
+        \item Performance assessment: simulation
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Asset screening}
+  \begin{itemize}
+    \item Five cryptocurrenciesBalance between market cap (Nov. 2025) and 24h trading volume (\href{https://coinmarketcap.com/}{CoinMarketCap})
+    \item Exclude meme coins (e.g., DOGE, SHIB), stablecoins (e.g., USDT, USDC).
+    \item Mature infrastructure and ecosystem.
+  \end{itemize}
+  \ \\
+  \ \\
+  \begin{enumerate}
+    \item Bitcoin (BTC-AUD)
+    \item Ethereum (ETH-AUD)
+    \item Ripple (XRP-AUD)
+    \item Binance Coin (BNB-AUD)
+    \item Solana (SOL-AUD)
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Data collection}
+  \begin{itemize}
+    \item Yahoo Finance API.
+    \begin{itemize}
+      \item Source price data from CoinMarketCap (aggregation of multiple exchanges).
+      \item Preferred since same asset may have different prices on different exchanges.
+    \end{itemize} 
+    \item Daily closing prices from Jan. 1, 2020 to Nov. 26, 2025.
+    \begin{itemize}
+      \item 24-7, weekends and holidays included.
+      \item open = first trade post UTC 00:00; close = last trade pre UTC 00:00.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Preliminary analysis on daily returns}
+\begin{figure}[htbp] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=\textwidth]{figure/Figure_1.png}
+    \caption{Daily return distribution}
+    \label{fig:figure1}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Preliminary analysis on daily returns}
+\begin{table}[]
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+Correlation& BNB-AUD & BTC-AUD & ETH-AUD & SOL-AUD & XRP-AUD \\ \hline
+BNB-AUD & 1.00        & 0.60        & 0.63        & 0.50        & 0.45        \\ \hline
+BTC-AUD & 0.60        & 1.00        & 0.78        & 0.51        & 0.52        \\ \hline
+ETH-AUD & 0.63        & 0.78        & 1.00        & 0.59        & 0.55        \\ \hline
+SOL-AUD & 0.50        & 0.51        & 0.59        & 1.00        & 0.43        \\ \hline
+XRP-AUD & 0.45        & 0.52        & 0.55        & 0.43        & 1.00        \\ \hline
+\end{tabular}
+\end{table}
+\end{frame}
+
+\begin{frame}{Preliminary analysis on daily returns}
+\begin{table}[]
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+ Daily & BNB-AUD & BTC-AUD & ETH-AUD & SOL-AUD & XRP-AUD \\ \hline
+count    & 2052        & 2052        & 2052        & 2052        & 2052        \\ \hline
+mean     & 0.003       & 0.002       & 0.002       & 0.004       & 0.003       \\ \hline
+std. dev.      & 0.043       & 0.030       & 0.040       & 0.064       & 0.055       \\ \hline
+skewness & 2.374       & -0.39       & 0.203       & 0.541       & 2.486       \\ \hline
+kurtosis & 38.130      & 11.012       & 4.792       & 5.795       & 28.794      \\ \hline
+min      & -0.327      & -0.150      & -0.266      & -0.416      & -0.425      \\ \hline
+max      & 0.676       & 0.183       & 0.257       & 0.459       & 0.707       \\ \hline
+\end{tabular}
+\end{table}
+\begin{itemize}
+  \item V.S. all-in-BTC (annualized): expected return$=60.66\%$, std. dev.$=56.37\%$, Sharpe ratio$=1.076$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Mean-variance optimization}
+\[
+\begin{aligned}
+\max_{w_i} \frac{E[R_p] - R_f}{\sigma_p}\\
+\text{s.t. }\sum_{i=1}^{n} w_i = 1, w_i \geq 0 \quad \forall i \\
+\end{aligned}
+\]
+
+\begin{itemize}
+  \item $E[R_p]$: expected portfolio return
+  \item $R_f$: funding rate (assume 4\% p.a.)
+  \item $\sigma_p$: portfolio standard deviation (risk)
+  \item $w_i$: weight of asset $i$ in portfolio
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Mean-variance optimization}
+\begin{figure}[htbp] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=\textwidth]{figure/Figure_2.png}
+    \label{fig:figure2}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Mean-variance optimization}
+\begin{itemize}
+  \item Annualized expected return: 119\%
+  \item Annualized volatility: 78\%
+  \item Sharpe ratio: 1.51
+\end{itemize}
+\begin{figure}[htbp] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.5\textwidth]{figure/Figure_3.png}
+    \label{fig:figure3}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Risk preference adjusted optimization}
+\begin{itemize}
+  \item Consider a model that factors in client's risk preferences \cite{Warren2019}.
+  \item Power utility function (constant relative risk aversion):
+\end{itemize}
+\[
+\max_{w_i} E[U(c)]
+\]
+\[
+  U(c) = 
+  \begin{cases}
+  \frac{c^{1-\gamma} - 1}{1-\gamma}, & \gamma \neq 1, \\
+  \ln(c), & \gamma = 2.
+  \end{cases}
+  \]
+  \begin{itemize}
+  \item $c$: consumption/wealth
+  \item Small $\gamma$ (e.g., 1-3): risk-tolerant; large $\gamma$ (e.g., $\geq 5$): risk-averse
+  \begin{itemize}
+  \item Parameter calibration can be done via survey or experiments.
+  \item For simplicity, assume $\gamma = 2$.
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Risk preference adjusted optimization}
+\begin{figure}[htbp] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=\textwidth]{figure/Figure_4.png}
+    \label{fig:figure4}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Risk preference adjusted optimization}
+\begin{itemize}
+  \item Annualized expected return: 96\%
+  \item Annualized volatility: 71\%
+  \item Sharpe ratio: 1.35
+\end{itemize}
+\begin{figure}[htbp] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.5\textwidth]{figure/Figure_5.png}
+    \label{fig:figure5}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Simulation}
+\begin{itemize}
+  \item Monte Carlo simulation of portfolio performance over 5 years.
+  \begin{itemize}
+    \item Euler discretization with daily time steps $(\Delta t=1/365$).
+  \end{itemize}
+  \item Asset modelling: Geometric Brownian Motion (GBM) with Heston stochastic volatility \cite{bergomi2015, heston1993}.
+  \begin{itemize}
+    \item Fat tails
+    \item Volatility clustering
+    \item Mean-reverting volatility
+    \item Volatility co-movement.
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Heston model}
+For each asset $i = 1,\dots,5$, the price process satisfies
+\begin{equation}
+\label{eq:heston_price}
+dS_{i,t}
+= (r - q_i) S_{i,t} \, dt
++ \sqrt{v_{i,t}}\, S_{i,t} \, dW^{(S_i)}_t,
+\end{equation}
+where $r$ is the risk-free rate, $q_i$ is the continuous dividend (or 
+foreign) yield ($0$ for cryptocurrencies), and $W^{(S_i)}_t$ is the Brownian motion driving the 
+price of asset $i$.\\
+\ \\
+The instantaneous variance of each asset follows mean-reverting square-root diffusion:
+\begin{equation}
+\label{eq:heston_var}
+dv_{i,t}
+= \kappa_i (\theta_i - v_{i,t}) \, dt
++ \eta_i \sqrt{v_{i,t}} \, dW^{(v_i)}_t,
+\qquad i = 1,\dots,5,
+\end{equation}
+\begin{equation}
+ corr(dW^{(S_i)}_t, dW^{(v_i)}_t) = \rho_i
+\end{equation}
+
+where $\kappa_i > 0$ is the speed of mean reversion, 
+$\theta_i > 0$ is the long-run variance level, and 
+$\eta_i > 0$ controls the volatility of volatility.
+\end{frame}
+
+\begin{frame}{Model parameter calibration ($\kappa, \theta, \eta, \rho$) via moment matching}
+\begin{table}[]
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+ & $\kappa$        &  $\theta$        & $\eta$       & $\rho$         \\ \hline
+BTC-AUD   & 2.385836 & 0.000872 & 0.153398 & -0.135730 \\ \hline
+ETH-AUD   & 2.189822 & 0.001606 & 0.218734 & -0.129252 \\ \hline
+SOL-AUD   & 1.441285 & 0.004091 & 0.304743 & -0.205783 \\ \hline
+BNB-AUD   & 1.580702 & 0.001827 & 0.482702 & -0.205482 \\ \hline
+XRP-AUD   & 2.414101 & 0.002995 & 0.670663 & -0.325292 \\ \hline
+\end{tabular}
+\end{table}
+\end{frame}
+
+\begin{frame}{How good is the calibration?}
+\begin{figure}[htbp] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=\textwidth]{figure/Figure_6.png}
+    \label{fig:figure6}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{How good is the calibration?}
+\begin{table}[]
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+   & Actual Mean & Actual Std & Actual Skew & Actual Kurt \\ \hline
+BTC-AUD & 0.002       & 0.029      & 0.170       & 6.635       \\ \hline
+ETH-AUD & 0.002       & 0.040      & 0.202       & 7.783       \\ \hline
+SOL-AUD & 0.004       & 0.064      & 0.540       & 8.778       \\ \hline
+BNB-AUD & 0.003       & 0.043      & 2.370       & 41.033      \\ \hline
+XRP-AUD & 0.003       & 0.055      & 2.485       & 31.750      \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[]
+\begin{tabular}{|c|l|l|l|l|}
+\hline
+   & Sim Mean  & Sim Std & Sim Skew  & Sim Kurt \\ \hline
+BTC-AUD & –0.001175 & 0.047   & –0.626778 & 9.514    \\ \hline
+ETH-AUD & –0.001721 & 0.066   & –0.640505 & 10.356   \\ \hline
+SOL-AUD & –0.006384 & 0.105   & –1.135138 & 12.161   \\ \hline
+BNB-AUD & –0.008859 & 0.113   & –1.641560 & 20.166   \\ \hline
+XRP-AUD & –0.019456 & 0.142   & –2.332980 & 19.661   \\ \hline
+\end{tabular}
+\end{table}
+\end{frame}
+
+\begin{frame}{Sample simulation path: good}
+\begin{table}[]
+\begin{tabular}{|c|c|c|}
+\hline
+Annualized   & Sharpe optimal & Utility optimal \\ \hline
+Return       & 185.67\%       & 161.00\%        \\ \hline
+Std. dev.    & 94.35\%        & 71.64\%         \\ \hline
+Max drawdown & -81.24\%       & -74.30\%        \\ \hline
+\end{tabular}
+\end{table}
+\begin{figure}[htbp] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.7\textwidth]{figure/Figure_7.png}
+    \label{fig:figure7}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Sample simulation path: worst}
+\begin{table}[]
+\begin{tabular}{|c|c|c|}
+\hline
+Annualized   & Sharpe optimal & Utility optimal \\ \hline
+Return       & -298.94\%      & -93.00\%        \\ \hline
+Std. dev.    & 112.15\%       & 77.60\%         \\ \hline
+Max drawdown & -99.39\%       & -98.39\%        \\ \hline
+\end{tabular}
+\end{table}
+\begin{figure}[htbp] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.7\textwidth]{figure/Figure_8.png}
+    \label{fig:figure8}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Epilogue \& possible extensions}
+  \begin{itemize}
+    \item Consider a better model for long-term price dynamics.
+    \item Out-of-sample backtesting and performance validation.
+    \begin{itemize}
+      \item Very tricky to work with time-series data due to effects like structural breaks, regime shifts, non-stationarity.
+    \end{itemize}
+    \item Dynamic asset allocation (moving $\%$ weights on assets).
+    \begin{itemize}
+      \item Rebalance portfolio periodically (e.g., monthly, quarterly).
+      \item Model parameter recalibration with rolling window.
+    \end{itemize}
+    \item Model personal characteristics: tax, annual contribution/debt, expected consumption and withdrawal.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Q\&A}
+  \centering
+  Thank you! Any questions?\\
+  Code \& results: \url{https://github.com/hsjharvey/temp_project}
+\end{frame}
+
+
+
+\section{References}
+\begin{frame}{References}
+  \begin{thebibliography}{10}
+    \bibitem{bergomi2015}
+      Bergomi, L. (2015). Stochastic volatility modeling. CRC press.
+    \bibitem{Gemini2025}
+      Google. (2025). Gemini. https://gemini.google.com/
+    \bibitem{heston1993}
+     Heston, S. L. (1993). A closed-form solution for options with stochastic volatility with applications to bond and currency options. The review of financial studies, 6(2), 327-343.
+    \bibitem{copilot2025}
+      Microsoft. (2025). Copilot. https://copilot.cloud.microsoft/
+    \bibitem{markowitz1952}
+      Markowitz, H. (1952). \textit{Portfolio Selection}. Journal of Finance, 7(1), 77-91.
+    \bibitem{Warren2019}
+      Warren, G. J. (2019). Choosing and using utility functions in forming portfolios. \textit{Financial Analysts Journal}, 75(3), 39-69.
+  \end{thebibliography}
+\end{frame}
+
+
+\end{document}

@@ -1,0 +1,32 @@
+\documentclass[
+    11pt,
+    aspectratio=1610
+	]{beamer}
+\setbeamertemplate{section page}{
+  \begin{centering}
+    \Large\insertsectionhead\par
+  \end{centering}
+}
+\setbeamertemplate{footline}[frame number]
+
+\usepackage[utf8]{inputenc}
+
+\setbeamertemplate{caption}[numbered]
+\usepackage{graphicx}
+\usepackage{amsmath}
+\hypersetup{
+  colorlinks=true,    % make links colored
+  linkcolor=blue,      % color for internal links (sections, TOC)
+  urlcolor=blue,      % color for external hyperlinks
+  citecolor=green     % color for citations
+}
+
+% Theme option to show section pages
+% \setbeamertemplate{section page}[default]
+
+% Automatically insert section page at each new section
+\AtBeginSection{
+  \begin{frame}[plain]
+    \sectionpage
+  \end{frame}
+}
