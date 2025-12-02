@@ -57,7 +57,7 @@
   \begin{itemize}
     \item Five cryptocurrenciesBalance between market cap (Nov. 2025) and 24h trading volume (\href{https://coinmarketcap.com/}{CoinMarketCap})
     \item Exclude meme coins (e.g., DOGE, SHIB), stablecoins (e.g., USDT, USDC).
-    \item Mature infrastructure and ecosystem.
+    \item Relatively mature infrastructure and ecosystem.
   \end{itemize}
   \ \\
   \ \\
@@ -72,10 +72,11 @@
 
 \begin{frame}{Data collection}
   \begin{itemize}
-    \item Yahoo Finance API.
+    \item CoinMarketCap through Yahoo Finance API.
     \begin{itemize}
       \item Source price data from CoinMarketCap (aggregation of multiple exchanges).
       \item Preferred since same asset may have different prices on different exchanges.
+      \item Data quality: outliers due to liquidity drainage and exchange specific issues.
     \end{itemize} 
     \item Daily closing prices from Jan. 1, 2020 to Nov. 26, 2025.
     \begin{itemize}
@@ -210,7 +211,7 @@ max      & 0.676       & 0.183       & 0.257       & 0.459       & 0.707       \
 \end{figure}
 \end{frame}
 
-\begin{frame}{Simulation}
+\begin{frame}{Performance assessment: simulation}
 \begin{itemize}
   \item Monte Carlo simulation of portfolio performance over 5 years.
   \begin{itemize}
@@ -218,10 +219,11 @@ max      & 0.676       & 0.183       & 0.257       & 0.459       & 0.707       \
   \end{itemize}
   \item Asset modelling: Geometric Brownian Motion (GBM) with Heston stochastic volatility \cite{bergomi2015, heston1993}.
   \begin{itemize}
+    \item Typically used to reconstruct option implied volatility surface.
     \item Fat tails
     \item Volatility clustering
     \item Mean-reverting volatility
-    \item Volatility co-movement.
+    \item Price-volatility co-movement.
   \end{itemize}
 \end{itemize}
 \end{frame}
@@ -342,16 +344,39 @@ Max drawdown & -99.39\%       & -98.39\%        \\ \hline
 \begin{frame}{Epilogue \& possible extensions}
   \begin{itemize}
     \item Consider a better model for long-term price dynamics.
+    \begin{itemize}
+      \item Economics/Tokenomics
+      \item GARCH
+      \item Machine learning
+    \end{itemize}
     \item Out-of-sample backtesting and performance validation.
     \begin{itemize}
       \item Very tricky to work with time-series data due to effects like structural breaks, regime shifts, non-stationarity.
     \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Epilogue \& possible extensions}
+  \begin{itemize}
+    \item GenAI? Alpha Arena: \url{https://nof1.ai/}
+    \item Day trading/short-term (hours/days) holdoing period but can possibly shed light on long-term asset allocation.
+  \end{itemize}
+  \begin{figure}[htbp] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=\textwidth]{figure/Figure_9.png}
+    \label{fig:figure8}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Epilogue \& possible extensions}
+    \begin{itemize}
     \item Dynamic asset allocation (moving $\%$ weights on assets).
     \begin{itemize}
       \item Rebalance portfolio periodically (e.g., monthly, quarterly).
       \item Model parameter recalibration with rolling window.
     \end{itemize}
     \item Model personal characteristics: tax, annual contribution/debt, expected consumption and withdrawal.
+    \item Beyond just the state-space: 2D state-action space dynamic optimization (reinforcement learning).
   \end{itemize}
 \end{frame}
 
