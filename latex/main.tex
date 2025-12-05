@@ -1,4 +1,36 @@
-\input{config.tex}
+\documentclass[
+    11pt,
+    aspectratio=1610
+	]{beamer}
+\setbeamertemplate{section page}{
+  \begin{centering}
+    \Large\insertsectionhead\par
+  \end{centering}
+}
+\setbeamertemplate{footline}[frame number]
+
+\usepackage[utf8]{inputenc}
+
+\setbeamertemplate{caption}[numbered]
+\usepackage{graphicx}
+\usepackage{amsmath}
+\hypersetup{
+  colorlinks=true,    % make links colored
+  linkcolor=blue,      % color for internal links (sections, TOC)
+  urlcolor=blue,      % color for external hyperlinks
+  citecolor=green     % color for citations
+}
+
+% Theme option to show section pages
+% \setbeamertemplate{section page}[default]
+
+% Automatically insert section page at each new section
+\AtBeginSection{
+  \begin{frame}[plain]
+    \sectionpage
+  \end{frame}
+}
+
 
 \title{Building a Multi-Asset Portfolio}
 \subtitle{A case study on constructing a cryptocurrency portfolio}
@@ -55,7 +87,7 @@
 
 \begin{frame}{Asset screening}
   \begin{itemize}
-    \item Five cryptocurrenciesBalance between market cap (Nov. 2025) and 24h trading volume (\href{https://coinmarketcap.com/}{CoinMarketCap})
+    \item Five cryptocurrencies: balance between market cap (Nov. 2025) and 24h trading volume (\href{https://coinmarketcap.com/}{CoinMarketCap})
     \item Exclude meme coins (e.g., DOGE, SHIB), stablecoins (e.g., USDT, USDC).
     \item Relatively mature infrastructure and ecosystem.
   \end{itemize}
@@ -76,7 +108,7 @@
     \begin{itemize}
       \item Source price data from CoinMarketCap (aggregation of multiple exchanges).
       \item Preferred since same asset may have different prices on different exchanges.
-      \item Data quality: outliers due to liquidity drainage and exchange specific issues.
+      \item Data quality: outliers due to liquidity squeeze and exchange specific issues during market turmoil.
     \end{itemize} 
     \item Daily closing prices from Jan. 1, 2020 to Nov. 26, 2025.
     \begin{itemize}
@@ -124,7 +156,7 @@ max      & 0.676       & 0.183       & 0.257       & 0.459       & 0.707       \
 \end{tabular}
 \end{table}
 \begin{itemize}
-  \item V.S. all-in-BTC (annualized): expected return$=60.66\%$, std. dev.$=56.37\%$, Sharpe ratio$=1.076$
+  \item All-in-BTC (annualized): expected return$=60.66\%$, std. dev.$=56.37\%$, Sharpe ratio$=1.076$, max drawdown$=-70\%$.
 \end{itemize}
 \end{frame}
 
@@ -177,7 +209,7 @@ max      & 0.676       & 0.183       & 0.257       & 0.459       & 0.707       \
   U(c) = 
   \begin{cases}
   \frac{c^{1-\gamma} - 1}{1-\gamma}, & \gamma \neq 1, \\
-  \ln(c), & \gamma = 2.
+  \ln(c), & \gamma = 1.
   \end{cases}
   \]
   \begin{itemize}
@@ -328,7 +360,7 @@ Max drawdown & -81.24\%       & -74.30\%        \\ \hline
 \begin{tabular}{|c|c|c|}
 \hline
 Annualized   & Sharpe optimal & Utility optimal \\ \hline
-Return       & -298.94\%      & -93.00\%        \\ \hline
+Return       & $-100\%^*$      & -93.00\%        \\ \hline
 Std. dev.    & 112.15\%       & 77.60\%         \\ \hline
 Max drawdown & -99.39\%       & -98.39\%        \\ \hline
 \end{tabular}
@@ -340,7 +372,7 @@ Max drawdown & -99.39\%       & -98.39\%        \\ \hline
 \end{figure}
 \end{frame}
 
-
+\section{Epilogue}
 \begin{frame}{Epilogue \& possible extensions}
   \begin{itemize}
     \item Consider a better model for long-term price dynamics.
@@ -359,7 +391,10 @@ Max drawdown & -99.39\%       & -98.39\%        \\ \hline
 \begin{frame}{Epilogue \& possible extensions}
   \begin{itemize}
     \item GenAI? Alpha Arena: \url{https://nof1.ai/}
-    \item Day trading/short-term (hours/days) holdoing period but can possibly shed light on long-term asset allocation.
+    \begin{itemize}
+      \item Day trading/short-term (hours/days) holding period.
+      \item Could possibly shed light on long-term asset allocation decisions.
+    \end{itemize} 
   \end{itemize}
   \begin{figure}[htbp] % h=here, t=top, b=bottom, p=page
     \centering
@@ -377,6 +412,10 @@ Max drawdown & -99.39\%       & -98.39\%        \\ \hline
     \end{itemize}
     \item Model personal characteristics: tax, annual contribution/debt, expected consumption and withdrawal.
     \item Beyond just the state-space: 2D state-action space dynamic optimization (reinforcement learning).
+    \begin{itemize}
+      \item state: economic regime, market conditions, etc.
+      \item action: allocation decision.
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
